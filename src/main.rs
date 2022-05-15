@@ -1,5 +1,4 @@
-#[macro_use]
-extern crate serde_derive;
+#[macro_use] extern crate serde_derive;
 extern crate plist;
 
 use std::fs::File;
@@ -7,6 +6,15 @@ use std::io::BufReader;
 
 use anyhow::Error;
 use directories::{UserDirs};
+use gtk4 as gtk;
+use gtk::prelude::*;
+use gtk::{Application, ApplicationWindow};
+
+pub mod track;
+pub mod library;
+pub mod playlist;
+
+use crate::library::Library;
 
 fn main() -> Result<(), Error> {
     if let Some(user_dirs) = UserDirs::new() {
@@ -20,10 +28,25 @@ fn main() -> Result<(), Error> {
         let fp = File::open(itunes_xml)?;
         let fp = BufReader::new(fp);
 
-        let plist = plist::from_reader_xml(fp)?;
-
-        print!("{:?}", plist);
+        let plist: Library = plist::from_reader_xml(fp)?;
     };
+
+    // let app = Application::builder()
+    //     .application_id("tech.quinnjr.mtp-sync")
+    //     .build();
+
+    //     app.connect_activate(|app| {
+    //         let window = ApplicationWindow::builder()
+    //             .application(app)
+    //             .default_width(1280)
+    //             .default_height(720)
+    //             .title("MTP-Sync")
+    //             .build();
+
+    //         window.show();
+    //     });
+
+    // app.run();
 
     return Ok(())
 }
